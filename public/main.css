@@ -165,10 +165,27 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    position: relative;
 }
 
 .player:hover {
     cursor: pointer;
+
+    filter: brightness(80%);
+}
+
+.player > img:not(:first-of-type) {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    height: 20px;
+}
+
+.player > img:not(:first-of-type):hover {
+    /*Add Things Here Later*/
+    opacity: 1;
 }
 
 #players {

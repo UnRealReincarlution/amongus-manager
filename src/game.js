@@ -34,8 +34,21 @@ class Game {
         }
     }
 
-    getPlayer (member) {
+    getPlayer(member) {
         return this.players.find(p => p.member.user.id === member.user.id)
+    }
+
+    setStage(stage) {
+        this.gameStage = stage;
+
+        if (stage.toLowerCase() === GameStates.LOBBY) this.setAll(true)
+        this.updatePlayerMute();
+    }
+
+    setAll(alive) {
+        for (const player of this.players) {
+            player.setState(alive)
+        }
     }
 
     updatePlayerBase() {
@@ -53,21 +66,20 @@ class Game {
     updatePlayerMute() {
         this.players.forEach(element => {
             if(this.gameStage == 'lobby'){
-                //unmute
-                console.log('Gamestage - Lobby: Unmuting');
-
+                element.member.voice.setMute(false);
+                console.log('Gamestage - Lobby: Unmuting Member');
             }else if(this.gameStage == 'discussion'){
                 console.log('Gamestage - Discussion: Managing');
                 if(element.alive) {
-                    // unmute
+                    element.member.voice.setMute(false);
                 }else{
-                    // mute
+                    element.member.voice.setMute(true);
                 }
 
             }else if(this.gameStage == 'tasks'){ 
                 console.log('Gamestage - Tasks: Muting');
 
-                // mute
+                element.member.voice.setMute(true);
             }else{
                 throw console.error('invalid gamestage');
             }

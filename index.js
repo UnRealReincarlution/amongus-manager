@@ -12,7 +12,9 @@ const path = require('path')
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-const GameManager = require("./src/game_manager.js")
+const GameManager = require("./src/game_manager.js");
+const GameStates = require('./src/game_states.js');
+const Player = require('./src/player.js');
 const PlayerColours = require("./src/player_colours.js");
 
 server.listen(3000, () => {
@@ -50,8 +52,14 @@ io.on('connection', socket => {
   });
 
   socket.on('endGame', function() {
-    gameManager.endGame(syncIdentification)
+    gameManager.endGame(syncIdentification);
+
     socket.disconnect();
+  });
+
+  socket.on("setStage", function(data) {
+    console.log(`Stage Set: ${data.stage}`);
+    gameManager.findSync(data.syncId).setStage(data.stage);
   });
 });
 
@@ -98,10 +106,10 @@ client.on('message', message => {
     if(msg[0] === 'join'){
       let joining_game = gameManager.findGame(message.member.voice.channel);
       
-      if(joining_game && !PlayerColours[msg[1]] && msg[1]){
+      if(joining_game && colourExists(msg[1]) && msg[1]){
         joining_game.addPlayer(message.member, msg[1])
-        message.reply(`Yay! You were successfully added to the game as \`${msg[1]}\``);
-      }else if(!PlayerColours[msg[1]]){
+        message.send(`You were successfully added to the game as \`${msg[1]}\``);
+      }else if(!colourExists(msg[1])){
         message.reply(`:thinking: Please enter a valid colour...`);
       }else if(joining_game){
         message.reply(`:thinking: We don't know of any ${msg[1]} impostors... Maybe try contacting the server admin if this is an issue`);
@@ -111,6 +119,16 @@ client.on('message', message => {
     }
   }
 });
+
+function colourExists(input){
+  Object.keys(PlayerColours).forEach(function(key) {
+    if (PlayerColours[key] == input) {
+      return true;
+    }
+  });
+
+  return false;
+}
 
 client.on("ready", () => {
   console.log("Ready!");

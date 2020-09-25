@@ -13,8 +13,12 @@ class GameManager {
 
     endGame(syncId) {
         let game = this.findSync(syncId);
-        console.log(`Deleted Game id ${game.voiceChannel.id} in ${game.voiceChannel.guild} for ${game.voiceChannel.name} chat.`);
+            game.setAll(true);
+            game.updatePlayerMute();
 
+        game.textChannel.send(`Game Ended in **${game.voiceChannel.name}**`);
+
+        console.log(`Deleted Game id ${game.voiceChannel.id} in ${game.voiceChannel.guild} for ${game.voiceChannel.name} chat.`);
         this.games.delete(game.voiceChannel.id);
     }
 

@@ -27,8 +27,12 @@ socket.on('returnGameInfo', function(data) {
             player_name.innerHTML = element.name;
             new_div.appendChild(player_name);
 
-            new_div.style.backgroundColor = backgroundColors[element.colour];
-            
+        let player_more = document.createElement("img");
+            player_more.src = './icons/maximize.svg';
+            new_div.appendChild(player_more);
+
+
+        new_div.style.backgroundColor = backgroundColors[element.colour];
         document.getElementById("players").appendChild(new_div);
     });
 
@@ -49,9 +53,9 @@ socket.on('updateGame', function(data) {
     console.log(data);
 })
 
-function endGame() {
+$(document).on('click','#end_game',function(e) {
     socket.emit('endGame');
-}
+});
 
 $(document).on('click','#player',function(e) {
     let colour = $(this).attr("player");
@@ -77,5 +81,18 @@ $(document).on('click','#player',function(e) {
         });
 
         $(this).find("img")[0].src = `./crewmates/${colour}.png`;
+    }
+});
+
+$(document).on('click','.stage',function(e) {
+    let new_stage = $(this).find("h2").html().toString().toLowerCase();
+
+    if(!$(this).hasClass("active")) {
+        socket.emit('setStage', {
+            syncId: syncId, 
+            stage: new_stage
+        });
+
+        console.log(new_stage);
     }
 });
