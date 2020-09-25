@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,600;0,700;1,400&display=swap');
+
+@font-face {
+    font-family: deafult;
+    src: url(./fonts/deafult.ttf);
+}
+
+* {
+    font-family: var(--font-family);
+    text-align: center;
+
+    --font-size: 12px;
+    --font-size-header: 25px;
+    --font-family: "Poppins";
+}
+
+h1 {
+    font-weight: lighter;
+}
+
+h1 strong {
+    font-weight: 700;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-direction: column;
+
+    width: 500px;
+
+    margin: 15px;
+
+    margin-right: 25px;
+    margin-left: 25px;
+    text-align: center;
+    width: 100%;
+    max-width: 330px;
+}
+
+.content > div {
+    width: 100%;
+}
+
+body {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.stages {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+}
+
+.stages > div {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.stages > div > div {
+    transition: .22s ease all;
+    width: 100%;
+
+    margin: 5px;
+    text-align: center;
+
+    border: none;
+    height: 50px;
+
+    font-weight: bold;
+
+    font-size: var(--font-size);
+    line-height: 27px;
+
+    color: rgb(255, 255, 255);
+    background-color: rgb(80, 93, 214);
+
+    border-radius: 25px;
+    margin-bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stages > div > div:hover:not(.active) {
+    cursor: pointer;
+    background-color: #A8AEEC;
+}
+
+.stages > div > div.active {
+    background-color: #A8AEEC;
+}
+
+.stages > div > div.active:hover {
+    cursor: not-allowed;
+}
+
+.connection_status {
+    text-transform: uppercase;
+
+    display: flex;
+    justify-content: center;
+    font-size: var(--font-size);
+
+    margin-top: 30px;
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+.end_game {
+    transition: .22s ease all;
+    width: 100%;
+    margin: 5px;
+
+    text-align: center;
+    border: none;
+
+    height: 50px;
+    font-weight: bold;
+    font-size: var(--font-size);
+    line-height: 27px;
+
+    color: rgb(255, 255, 255);
+    background-color: rgb(80, 93, 214);
+    border-radius: 25px;
+    margin-bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.end_game:hover {
+    cursor: pointer;
+}
+
+.player {
+    border-radius: 5px;
+    font-size: var(--font-size);
+
+    font-weight: bold;
+    color: white;
+    border: none;
+    outline: white;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    height: 80px;
+    width: calc(50% - 5px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.player:hover {
+    cursor: pointer;
+}
+
+#players {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    width: 100%;
+    margin-bottom: 55px;
+}
+
+.player img {
+    height: 35px;
+    padding: 5px;
+}
+
+.connected {
+    height: 10px;
+    width: 10px;
+    background-color: rgb(106, 204, 134);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}

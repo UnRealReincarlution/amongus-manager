@@ -1,0 +1,81 @@
+const urlParams = new URLSearchParams(window.location.search);
+const syncId = urlParams.get('game');
+
+let socket = io();
+socket.emit('getGameInfo', syncId);
+
+socket.on('returnGameInfo', function(data) {
+    $(`#${data.gameStage}`).parent().addClass('active');
+
+    $("#connection_text").html(`Connected to <strong>${data.name}</strong>`)
+
+    console.log(`Connected to game ${syncId}. Players: ${data.players.length} - Current Game State: ${data.gameStage}`);
+
+    data.players.forEach(element => {
+        let new_div = document.createElement("div");
+            new_div.classList.add("player");
+            new_div.id = "player";
+            new_div.setAttribute("player", element.colour);
+            new_div.setAttribute("status", element.alive);
+            //new_div.setAttribute("onclick", killRevive(element.colour, element.alive));
+
+        let player_icon = document.createElement("img");
+            player_icon.src = (element.alive) ? `./crewmates/${element.colour}.png` : `./crewmates/${element.colour}_dead.png`;
+            new_div.appendChild(player_icon);
+
+        let player_name = document.createElement("div");
+            player_name.innerHTML = element.name;
+            new_div.appendChild(player_name);
+
+            new_div.style.backgroundColor = backgroundColors[element.colour];
+            
+        document.getElementById("players").appendChild(new_div);
+    });
+
+    if(data.players.length < 1) {
+        let new_div = document.createElement("div");
+            new_div.innerHTML = "There are no players in this game. <br> Try using am.join <colour> in discord."
+        document.getElementById("players").appendChild(new_div);
+    }
+});
+
+socket.on('disconnect', function(){
+    $("#connection_icon").css("background-color", "rgb(241 34 45)");
+    $("#connection_text").html("Connection Lost")
+});
+
+socket.on('updateGame', function(data) {
+    console.log("INFO UPDATE RECIEVED");
+    console.log(data);
+})
+
+function endGame() {
+    socket.emit('endGame');
+}
+
+$(document).on('click','#player',function(e) {
+    let colour = $(this).attr("player");
+    let status = $(this).attr("status");
+
+    if(status === 'true') {
+        console.log("Player Killed");
+        $(this).attr("status", false);
+
+        socket.emit("killPlayer", {
+            colour: colour, 
+            syncId: syncId
+        });
+
+        $(this).find("img")[0].src = `./crewmates/${colour}_dead.png`;
+    }else {
+        console.log("Player Revived");
+        $(this).attr("status", true);
+
+        socket.emit("revivePlayer", {
+            colour: colour, 
+            syncId: syncId
+        });
+
+        $(this).find("img")[0].src = `./crewmates/${colour}.png`;
+    }
+});
