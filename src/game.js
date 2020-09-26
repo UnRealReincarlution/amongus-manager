@@ -1,6 +1,7 @@
 const Player = require('./player.js')
 const GameStates = require('./game_states.js')
 const PlayerColours = require('./player_colours.js')
+const AudioState = require('./audio_states.js')
 
 class Game {
     constructor (voiceChannel, textChannel, manager) {
@@ -96,32 +97,7 @@ class Game {
 
     updatePlayerMute() {
         this.players.forEach(element => {
-            if(this.gameStage == 'lobby'){
-                element.member.voice.setMute(false);
-                element.member.voice.setDeaf(false);
-
-                console.log('Gamestage - Lobby: Unmuting Member');
-            }else if(this.gameStage == 'discussion'){
-                element.member.voice.setDeaf(false);
-
-                console.log('Gamestage - Discussion: Managing');
-                if(element.alive) {
-                    element.member.voice.setMute(false);
-                }else{
-                    element.member.voice.setMute(true);
-                }
-
-            }else if(this.gameStage == 'tasks'){ 
-                console.log('Gamestage - Tasks: Muting');
-
-                element.member.voice.setMute(element.alive);
-                element.member.voice.setDeaf(element.alive);
-            }else{
-                element.member.voice.setMute(false);
-                element.member.voice.setDeaf(false);
-
-                console.error('invalid gamestage');
-            }
+            element.member.edit(new AudioState(element.alive, this.gameStage));
         });
     }
 

@@ -79,8 +79,9 @@ client.on('message', message => {
   
         message.channel.send(`Game Created in **${message.member.voice.channel.name}**`);
         let game = gameManager.findGame(message.member.voice.channel);
-        let game_url = `http://128.199.234.165:3000?game=${game.syncId}`;
-
+        //let game_url = `http://128.199.234.165:3000?game=${game.syncId}`;
+        let game_url = `http://localhost:3000?game=${game.syncId}`;
+        
         const RichEmbed = new Discord.MessageEmbed()
             .setColor('#ffde2a')
             .setTitle('Among Us Manager Sync')

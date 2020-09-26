@@ -18,6 +18,8 @@ function updateRender(data) {
             document.getElementById("players").removeChild(document.getElementById("players").firstChild);
         }
 
+        $(".active").removeClass("active");
+
         $(`#${data.gameStage}`).parent().addClass('active');
 
         $("#connection_text").html(`Connected to <strong>${data.name}</strong>`)
