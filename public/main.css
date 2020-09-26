@@ -44,6 +44,10 @@ header {
     text-align: center;
     width: 100%;
     max-width: 330px;
+
+    height: 100%;
+    position: relative;
+    justify-content: flex-start;
 }
 
 .content > div {
@@ -55,6 +59,9 @@ body {
     align-items: center;
     display: flex;
     flex-direction: column;
+
+    height: 100vh;
+    margin: 15px;
 }
 
 .stages {
@@ -123,7 +130,7 @@ body {
 
 .end_game {
     transition: .22s ease all;
-    width: 100%;
+    max-width: 350px !important;
     margin: 5px;
 
     text-align: center;
@@ -142,6 +149,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    position: fixed;
+
+    justify-self: flex-end;
+    bottom: 0;
+
+    margin: 15px;
 }
 
 .end_game:hover {

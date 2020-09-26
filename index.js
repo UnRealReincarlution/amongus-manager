@@ -13,8 +13,6 @@ const path = require('path')
 app.use(express.static(path.join(__dirname, 'public')));
 
 const GameManager = require("./src/game_manager.js");
-const GameStates = require('./src/game_states.js');
-const Player = require('./src/player.js');
 const PlayerColours = require("./src/player_colours.js");
 
 server.listen(3000, () => {
@@ -84,7 +82,7 @@ client.on('message', message => {
         const RichEmbed = new Discord.MessageEmbed()
             .setColor('#ffde2a')
             .setTitle('Among Us Manager Sync')
-            .setDescription(`I saw ${PlayerColours[12 * Math.random() << 0]} vent... Kind of sus \n`)
+            .setDescription(`I saw ${randomColour()} vent... Kind of sus \n`)
             .setURL(game_url)
 
             .addFields(
@@ -106,13 +104,15 @@ client.on('message', message => {
     if(msg[0] === 'join'){
       let joining_game = gameManager.findGame(message.member.voice.channel);
       
-      if(joining_game && colourExists(msg[1]) && msg[1]){
-        joining_game.addPlayer(message.member, msg[1])
-        message.send(`You were successfully added to the game as \`${msg[1]}\``);
+      if(joining_game && colourExists(msg[1].trim()) && msg[1] && !joining_game.getPlayer(message.member)){
+        joining_game.addPlayer(message.member, msg[1].trim())
+        message.channel.send(`You were successfully added to the game as \`${msg[1]}\``);
       }else if(!colourExists(msg[1])){
         message.reply(`:thinking: Please enter a valid colour...`);
-      }else if(joining_game){
-        message.reply(`:thinking: We don't know of any ${msg[1]} impostors... Maybe try contacting the server admin if this is an issue`);
+      }else if(joining_game.getPlayer(message.member)){
+        message.reply(`You are already in this game...`);
+      }else if(!joining_game){
+        message.reply(`:thinking: No games exist in this server. Maybe try contacting the server admin if you believe this is an issue`);
       }else{
         message.reply(`:thinking: Try providing a colour, like \`am.join cyan\``);
       }
@@ -121,14 +121,48 @@ client.on('message', message => {
 });
 
 function colourExists(input){
+  let return_value = false;
   Object.keys(PlayerColours).forEach(function(key) {
-    if (PlayerColours[key] == input) {
-      return true;
+    if (PlayerColours[key].toString() == input.toString()) {
+      return_value =  true;
     }
   });
 
-  return false;
+  return return_value;
 }
+
+function randomColour() {
+  let return_value = '';
+  let random = Math.floor(Math.random() * 12);
+
+  Object.keys(PlayerColours).forEach((key, index) => {
+    if (index == random) {
+      return_value = PlayerColours[key];
+    }
+  });
+
+  return return_value;
+}
+
+client.on("voiceStateUpdate", function(oldMember, newMember) {
+  let newUserChannel = newMember.voiceChannel;
+  let oldUserChannel = oldMember.voiceChannel;
+
+  let game_find = ;// eaither
+  let game = gameManager.findGame(oldMember.voiceChannel);
+
+  if(newMember.voiceChannel){
+    
+
+    if(oldUserChannel === undefined && newUserChannel !== undefined && game) {
+      game.addPlayer(newMember, game.generateColour());
+    }else if(newUserChannel === undefined && game){
+      game.removePlayer(oldMember);
+    }
+  }else{
+    game.removePlayer(oldMember);
+  }
+});
 
 client.on("ready", () => {
   console.log("Ready!");

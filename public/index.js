@@ -88,6 +88,9 @@ $(document).on('click','.stage',function(e) {
     let new_stage = $(this).find("h2").html().toString().toLowerCase();
 
     if(!$(this).hasClass("active")) {
+        $(".active").removeClass("active");
+        $(this).addClass("active");
+        
         socket.emit('setStage', {
             syncId: syncId, 
             stage: new_stage

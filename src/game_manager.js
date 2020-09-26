@@ -23,13 +23,13 @@ class GameManager {
     }
 
     findGame(voiceChannel) {
-        return this.games.get(voiceChannel.id) || null;
+        return this.games.get(voiceChannel.id);
     }
 
     findSync(syncId) {
         let return_val;
 
-        this.games.forEach( element => {
+        this.games.forEach(element => {
             if(element.syncId == syncId) {
                 return_val = element;
             }

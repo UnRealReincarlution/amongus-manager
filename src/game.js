@@ -1,5 +1,6 @@
 const Player = require('./player.js')
 const GameStates = require('./game_states.js')
+const PlayerColours = require('./player_colours.js')
 
 class Game {
     constructor (voiceChannel, textChannel, manager) {
@@ -9,6 +10,10 @@ class Game {
         this.textChannel = textChannel
         this.gameStage = GameStates.LOBBY
         this.players = []
+
+        voiceChannel.members.forEach(element => {
+            this.addPlayer(element, this.generateColour());
+        });
     }
 
     addPlayer(member, colour) {
@@ -35,7 +40,32 @@ class Game {
     }
 
     getPlayer(member) {
-        return this.players.find(p => p.member.user.id === member.user.id)
+        return this.players.find(p => p.member.user.id === member.user.id) || null;
+    }
+
+    generateColour() {
+        let return_value = '';
+
+        while(return_value == ''){
+            Object.keys(PlayerColours).forEach(key => {
+                if (!this.colourExists(PlayerColours[key])) {
+                    return_value = PlayerColours[key];
+                    return PlayerColours[key];
+                }
+            });
+        }
+        
+        return return_value;
+    }
+
+    colourExists(colour) {
+        this.players.forEach(element => {
+            if(element.colour == colour){
+                return true;
+            }
+        });
+
+        return false;
     }
 
     setStage(stage) {
