@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const GameManager = require("./src/game_manager.js");
 const PlayerColours = require("./src/player_colours.js");
 
-server.listen(80, () => {
+server.listen(3000, () => {
   console.log("Alive and well!")
 });
 
