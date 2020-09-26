@@ -18,7 +18,7 @@ class Game {
     }
 
     addPlayer(member, colour) {
-        const player = new Player(member, colour)
+        const player = new Player(member, colour, this.syncId)
         this.players.push(player)
 
         this.updatePlayerBase();

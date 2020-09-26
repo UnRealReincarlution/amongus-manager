@@ -26,6 +26,19 @@ class GameManager {
         return this.games.get(voiceChannel.id) || null;
     }
 
+    findUserInGame(userId) {
+        let return_val = null;
+        this.games.forEach(game => {
+            game.players.forEach(player => {
+                if(player.member.id == userId) {
+                    return_val = player;
+                }
+            });
+        });
+
+        return return_val;
+    }
+
     findSync(syncId) {
         let return_val;
 

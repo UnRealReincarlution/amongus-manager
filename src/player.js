@@ -1,11 +1,12 @@
 const PlayerColours = require('./player_colours.js')
 
 class Player {
-    constructor (member, colour) {
+    constructor (member, colour, syncId) {
         this.member = member;
         this.colour = colour.toLowerCase();
         this.alive  = true;
         this.name   = member.displayName;
+        this.parent = syncId;
     }
 
     setState (state) {
