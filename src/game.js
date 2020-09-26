@@ -75,6 +75,7 @@ class Game {
 
         if (stage.toLowerCase() === GameStates.LOBBY) this.setAll(true)
         this.updatePlayerMute();
+        this.updatePlayerBase();
     }
 
     setAll(alive) {

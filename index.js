@@ -1,5 +1,6 @@
 "use strict";
-const TOKEN = 'NzU4MjUzNTQzNTIxNjQ4NjYx.X2sQpA.YoOP1v7KIee9qQt0b82t_1Nm1Z8';
+//const URL = '128.199.234.165:3000';
+const URL = 'localhost:3000';
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -14,6 +15,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const GameManager = require("./src/game_manager.js");
 const PlayerColours = require("./src/player_colours.js");
+const Token = require('./token.js');
+const TOKEN = new Token().token;
 
 server.listen(3000, () => {
   console.log("Alive and well!")
@@ -82,8 +85,7 @@ client.on('message', message => {
     
           message.channel.send(`Game Created in **${message.member.voice.channel.name}**`);
           let game = gameManager.findGame(message.member.voice.channel);
-          //let game_url = `http://128.199.234.165:3000?game=${game.syncId}`;
-          let game_url = `http://localhost:3000?game=${game.syncId}`;
+          let game_url = `http://${URL}?game=${game.syncId}`;
           
           const RichEmbed = new Discord.MessageEmbed()
               .setColor('#ffde2a')
