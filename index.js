@@ -38,6 +38,15 @@ io.on('connection', socket => {
       }
 
       socket.emit('returnGameInfo', secure_custom_game_obj);
+    }else{
+      var secure_custom_game_obj = {
+        players: null,
+        syncId: null,
+        gameStage: null,
+        name: null
+      }
+
+      socket.emit('returnGameInfo', secure_custom_game_obj);
     }
   });
 
@@ -89,7 +98,7 @@ client.on('message', message => {
               // { name: 'URL', value: `[${game.syncId}](${game_url})` },
               // { name: '\u200B', value: '\u200B' },
               { name: 'Player Count', value: game.players.length, inline: true },
-              { name: 'Game Stage', value: game.gameStage, inline: true },
+              { name: 'Game Stage', value: game.gameStage.toUpperCase(), inline: true },
             )
 
             //.setURL('https://amongus_manager.io/') //?game=', game.syncId)
@@ -145,22 +154,23 @@ function randomColour() {
 }
 
 client.on("voiceStateUpdate", function(oldMember, newMember) {
-  let newUserChannel = newMember.voiceChannel;
-  let oldUserChannel = oldMember.voiceChannel;
+  let newUserChannel = newMember.channel;
+  let oldUserChannel = oldMember.channel;
 
-  let game_find = ;// eaither
-  let game = gameManager.findGame(oldMember.voiceChannel);
+  let game_find = (newUserChannel) ? newUserChannel : oldUserChannel;
 
-  if(newMember.voiceChannel){
-    
+  if(game_find){
+    let game = gameManager.findGame(game_find);
 
-    if(oldUserChannel === undefined && newUserChannel !== undefined && game) {
-      game.addPlayer(newMember, game.generateColour());
-    }else if(newUserChannel === undefined && game){
-      game.removePlayer(oldMember);
+    if(!oldUserChannel && game) {
+      console.log("Player Joined...");
+
+      game.addPlayer(newMember.member, game.generateColour());
+    }else if(!newUserChannel && game){
+      console.log("Player Left...");
+
+      game.removePlayer(oldMember.member);
     }
-  }else{
-    game.removePlayer(oldMember);
   }
 });
 

@@ -30,12 +30,12 @@ class Game {
         const player = this.getPlayer(member)
         this.players.splice(this.players.indexOf(player), 1)
 
-        this.sendStateUpdate()
+        this.updatePlayerBase()
         this.updatePlayerMute(player)
 
         if (this.players.length === 0) {
             this.textChannel.send(`The game in **${this.voiceChannel.name}** has ended because there were no players left.`)
-            this.manager.endGame(this.voiceChannel)
+            this.manager.endGame(this.syncId)
         }
     }
 
@@ -59,13 +59,14 @@ class Game {
     }
 
     colourExists(colour) {
+        let return_value = false;
         this.players.forEach(element => {
             if(element.colour == colour){
-                return true;
+                return_value = true;
             }
         });
 
-        return false;
+        return return_value;
     }
 
     setStage(stage) {
@@ -97,8 +98,12 @@ class Game {
         this.players.forEach(element => {
             if(this.gameStage == 'lobby'){
                 element.member.voice.setMute(false);
+                element.member.voice.setDeaf(false);
+
                 console.log('Gamestage - Lobby: Unmuting Member');
             }else if(this.gameStage == 'discussion'){
+                element.member.voice.setDeaf(false);
+
                 console.log('Gamestage - Discussion: Managing');
                 if(element.alive) {
                     element.member.voice.setMute(false);
@@ -109,9 +114,13 @@ class Game {
             }else if(this.gameStage == 'tasks'){ 
                 console.log('Gamestage - Tasks: Muting');
 
-                element.member.voice.setMute(true);
+                element.member.voice.setMute(element.alive);
+                element.member.voice.setDeaf(element.alive);
             }else{
-                throw console.error('invalid gamestage');
+                element.member.voice.setMute(false);
+                element.member.voice.setDeaf(false);
+
+                console.error('invalid gamestage');
             }
         });
     }

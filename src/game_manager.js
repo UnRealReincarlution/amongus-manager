@@ -23,7 +23,7 @@ class GameManager {
     }
 
     findGame(voiceChannel) {
-        return this.games.get(voiceChannel.id);
+        return this.games.get(voiceChannel.id) || null;
     }
 
     findSync(syncId) {
