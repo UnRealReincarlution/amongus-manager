@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const GameManager = require("./src/game_manager.js");
 const PlayerColours = require("./src/player_colours.js");
 
-server.listen(3000, () => {
+server.listen(80, () => {
   console.log("Alive and well!")
 });
 
@@ -39,14 +39,7 @@ io.on('connection', socket => {
 
       socket.emit('returnGameInfo', secure_custom_game_obj);
     }else{
-      var secure_custom_game_obj = {
-        players: null,
-        syncId: null,
-        gameStage: null,
-        name: null
-      }
-
-      socket.emit('returnGameInfo', secure_custom_game_obj);
+      socket.emit('returnGameInfo', null);
     }
   });
 
@@ -86,7 +79,7 @@ client.on('message', message => {
   
         message.channel.send(`Game Created in **${message.member.voice.channel.name}**`);
         let game = gameManager.findGame(message.member.voice.channel);
-        let game_url = `http://localhost:3000?game=${game.syncId}`;
+        let game_url = `http://localhost:80?game=${game.syncId}`;
 
         const RichEmbed = new Discord.MessageEmbed()
             .setColor('#ffde2a')

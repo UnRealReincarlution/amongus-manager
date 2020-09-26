@@ -13,11 +13,11 @@ socket.on('updateGame', function(data) {
 })
 
 function updateRender(data) {
-    if(data.syncId !== null) {
+    if(data !== null) {
         while(document.getElementById("players").firstChild) {
             document.getElementById("players").removeChild(document.getElementById("players").firstChild);
         }
-        
+
         $(`#${data.gameStage}`).parent().addClass('active');
 
         $("#connection_text").html(`Connected to <strong>${data.name}</strong>`)
