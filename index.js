@@ -23,12 +23,12 @@ server.listen(3000, () => {
 });
 
 let gameManager = new GameManager(io)
+let syncIdentification;
 
-io.on('connection', socket => {
-  let syncIdentification;
-  socket.send('Hello!');
+io.on('connection', (socket) => {
+  socket.on('getGameInfo', async (syncId) => {
+    await socket.join(syncId);
 
-  socket.on('getGameInfo', function(syncId) {
     syncIdentification = syncId;
     let reply = gameManager.findSync(syncId);
 
@@ -61,7 +61,6 @@ io.on('connection', socket => {
   });
 
   socket.on("setStage", function(data) {
-    console.log(`Stage Set: ${data.stage}`);
     gameManager.findSync(data.syncId).setStage(data.stage);
   });
 });
@@ -163,20 +162,14 @@ client.on("voiceStateUpdate", function(oldMember, newMember) {
     let game = gameManager.findGame(game_find);
 
     if(!oldUserChannel && game) {
-      console.log("Player Joined...");
-
       game.addPlayer(newMember.member, game.generateColour());
     }else if(!newUserChannel && game){
-      console.log("Player Left...");
-
       game.removePlayer(oldMember.member);
     }
   }
 });
 
 client.on("guildMemberUpdate", function(oldMember, newMember) {
-  console.log(`Users' name has changed to ${newMember.nickname}`);
-
   let player = gameManager.findUserInGame(newMember.id);
       player.member = newMember;
       player.name = newMember.nickname;
@@ -188,10 +181,10 @@ client.on("ready", () => {
   console.log("Ready!");
 
   client.user.setPresence({
-      status: "online",  // You can show online, idle... Do not disturb is dnd
-      game: {
-          name: "!help",  // The message shown
-          type: "PLAYING" // PLAYING, WATCHING, LISTENING, STREAMING,
+      status: "online", 
+      activity: {
+          name: `${client.guilds.cache.size} ${(client.guilds.cache.size > 1) ? 'Servers' : 'Server'}`, 
+          type: "WATCHING" // PLAYING, WATCHING, LISTENING, STREAMING
       }
   });
 });

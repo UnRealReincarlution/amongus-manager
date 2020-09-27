@@ -186,7 +186,7 @@ body {
 .player:hover {
     cursor: pointer;
 
-    filter: brightness(80%);
+    filter: brightness(90%);
 }
 
 .player > img:not(:first-of-type) {

@@ -2,15 +2,18 @@ const urlParams = new URLSearchParams(window.location.search);
 const syncId = urlParams.get('game');
 
 let socket = io();
-socket.emit('getGameInfo', syncId);
 
-socket.on('returnGameInfo', function(data) {
-    updateRender(data);
+socket.on('connect', function() {
+    socket.emit('getGameInfo', syncId);
+
+    socket.on('returnGameInfo', function(data) {
+        updateRender(data);
+    });
+    
+    socket.on('updateGame', function(data) {
+        updateRender(data);
+    })
 });
-
-socket.on('updateGame', function(data) {
-    updateRender(data);
-})
 
 function updateRender(data) {
     if(data !== null) {
@@ -44,6 +47,7 @@ function updateRender(data) {
 
             let player_more = document.createElement("img");
                 player_more.src = './icons/maximize.svg';
+                player_more.classList.add("viewmode_toggle")
                 new_div.appendChild(player_more);
 
 
@@ -98,7 +102,7 @@ $(document).on('click','#player',function(e) {
     }
 });
 
-$(document).on('click','.stage',function(e) {
+$(document).on('click','.stage', function(e) {
     let new_stage = $(this).find("h2").html().toString().toLowerCase();
 
     if(!$(this).hasClass("active")) {
@@ -113,3 +117,7 @@ $(document).on('click','.stage',function(e) {
         console.log(new_stage);
     }
 });
+
+$(document).on('click', '.viewmode_toggle', function(e) {
+    console.log(` VIEWING ${$(this).parent().attr("player")} `);
+})

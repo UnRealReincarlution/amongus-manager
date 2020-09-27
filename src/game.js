@@ -93,7 +93,7 @@ class Game {
             name: this.voiceChannel.name
         }
 
-        this.manager.io.emit('updateGame', secure_custom_game_obj);
+        this.manager.io.to(this.syncId).emit('updateGame', secure_custom_game_obj);
     }
 
     updatePlayerMute() {
