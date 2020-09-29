@@ -1,4 +1,6 @@
 "use strict";
+// https://discord.com/oauth2/authorize?client_id=758253543521648661&scope=bot&permissions=248736832
+
 //const URL = '128.199.234.165:3000';
 const URL = 'localhost:3000';
 
@@ -15,11 +17,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const GameManager = require("./src/game_manager.js");
 const PlayerColours = require("./src/player_colours.js");
+const Commands = require("./src/commands.js")
 const Token = require('./token.js');
 const TOKEN = new Token().token;
 
 server.listen(3000, () => {
-  console.log("Alive and well!")
+  console.log("Server Alive and Well!")
 });
 
 let gameManager = new GameManager(io)
@@ -125,6 +128,14 @@ client.on('message', message => {
         message.reply(`:thinking: Try providing a colour, like \`am.join cyan\``);
       }
     }
+
+    if(msg[0] === 'help') {
+      message.channel.send("The folowing is all the commands that you can use.");
+      
+      Commands.forEach(element => {
+        message.channel.send(`\`am.${element.command}\` ${element.desc} `);
+      });
+    }
   }
 });
 
@@ -170,15 +181,20 @@ client.on("voiceStateUpdate", function(oldMember, newMember) {
 });
 
 client.on("guildMemberUpdate", function(oldMember, newMember) {
-  let player = gameManager.findUserInGame(newMember.id);
+  if(newMember){
+    let player = gameManager.findUserInGame(newMember.id);
+
+    if(player){
       player.member = newMember;
       player.name = newMember.nickname;
 
-  gameManager.findSync(player.parent).updatePlayerBase();
+      gameManager.findSync(player.parent).updatePlayerBase();
+    }
+  }
 });
 
 client.on("ready", () => {
-  console.log("Ready!");
+  console.log("Client Ready!");
 
   client.user.setPresence({
       status: "online", 

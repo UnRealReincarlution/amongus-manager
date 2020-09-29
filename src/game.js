@@ -103,8 +103,6 @@ class Game {
     }
 
     kill(player_colour) {
-        console.log("Oh no...");
-
         this.players.forEach(element => {
             if(element.colour == player_colour){
                 element.alive = false;
@@ -116,8 +114,6 @@ class Game {
     }
 
     revive(player_colour) {
-        console.log("DPS Mercy has arived...");
-
         this.players.forEach(element => {
             if(element.colour == player_colour){
                 element.alive = true;

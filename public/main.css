@@ -61,7 +61,7 @@ body {
     flex-direction: column;
 
     height: 100vh;
-    margin: 15px;
+    margin: 0;
 }
 
 .stages {
@@ -130,7 +130,7 @@ body {
 
 .end_game {
     transition: .22s ease all;
-    max-width: 350px !important;
+    max-width: 330px !important;
     margin: 5px;
 
     text-align: center;
@@ -183,10 +183,35 @@ body {
     position: relative;
 }
 
+.sheet {
+    border-radius: 5px;
+    font-size: var(--font-size);
+
+    font-weight: bold;
+
+    color: white;
+    outline: white;
+    background-color: white;
+
+    border: none;
+    border-radius: 5px;
+
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+}
+
 .player:hover {
     cursor: pointer;
-
-    filter: brightness(90%);
 }
 
 .player > img:not(:first-of-type) {
@@ -200,6 +225,47 @@ body {
 .player > img:not(:first-of-type):hover {
     /*Add Things Here Later*/
     opacity: 1;
+}
+
+.fullscreen {
+    position: absolute;
+    top: 0 !important;
+}
+
+#edit_player {
+    display: none;
+}
+
+.edit_player {
+    display: flex !important;
+    position: fixed;
+    height: 75%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    max-width: 330px;
+    width: 100%;
+
+    bottom: 0;
+    z-index: 10;
+}
+
+#edit_player_player {
+    margin-bottom: -40px;
+    z-index: 10;
+}
+
+.dark {
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    position: fixed;
+    height: 100vh;
+    max-width: 330px;
+    width: 100%;
+
+    display: none;
+    backdrop-filter: blur(2px);
 }
 
 #players {
@@ -223,4 +289,56 @@ body {
     border-radius: 50%;
     display: inline-block;
     margin-right: 5px;
+}
+
+.dark_variant {
+    transition: .22s ease all;
+    width: 100%;
+
+    margin: 5px;
+    text-align: center;
+
+    border: none;
+    height: 50px;
+
+    font-weight: bold;
+
+    font-size: var(--font-size);
+    line-height: 27px;
+
+    color: rgb(214, 80, 93);
+    background-color: rgba(214, 80, 93, 0.2);
+
+    border-radius: 25px;
+    margin-bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle_variant {
+    transition: .22s ease all;
+    width: 100%;
+
+    margin: 5px;
+    text-align: center;
+
+    border: none;
+    height: 50px;
+
+    font-weight: bold;
+
+    font-size: var(--font-size);
+    line-height: 27px;
+
+    color: rgb(255, 255, 255);
+    background-color: rgb(214, 80, 93);
+
+    border-radius: 25px;
+    margin-bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

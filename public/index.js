@@ -2,6 +2,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const syncId = urlParams.get('game');
 
 let socket = io();
+let current_game = {};
 
 socket.on('connect', function() {
     socket.emit('getGameInfo', syncId);
@@ -17,6 +18,8 @@ socket.on('connect', function() {
 
 function updateRender(data) {
     if(data !== null) {
+        current_game = data;
+
         while(document.getElementById("players").firstChild) {
             document.getElementById("players").removeChild(document.getElementById("players").firstChild);
         }
@@ -45,11 +48,10 @@ function updateRender(data) {
                 player_name.innerHTML = element.name;
                 new_div.appendChild(player_name);
 
-            let player_more = document.createElement("img");
-                player_more.src = './icons/maximize.svg';
-                player_more.classList.add("viewmode_toggle")
-                new_div.appendChild(player_more);
-
+            // let player_more = document.createElement("img");
+            //     player_more.src = './icons/maximize.svg';
+            //     player_more.classList.add("viewmode_toggle")
+            //     new_div.appendChild(player_more);
 
             new_div.style.backgroundColor = backgroundColors[element.colour];
             document.getElementById("players").appendChild(new_div);
@@ -118,6 +120,28 @@ $(document).on('click','.stage', function(e) {
     }
 });
 
-$(document).on('click', '.viewmode_toggle', function(e) {
-    console.log(` VIEWING ${$(this).parent().attr("player")} `);
-})
+$(document).on("contextmenu", ".player", function(e){
+    e.preventDefault()
+    let editing_colour = $(this).attr("player");
+
+    loadPlayerEditor(editing_colour);
+});
+
+function loadPlayerEditor(colour) {
+    $("#edit_player").addClass("edit_player");
+    $(".dark").css("display", "block")
+
+    current_game.players.forEach(element => {
+        console.log(`${element.colour} - ${colour} ?`);
+        if(element.colour == colour){
+            $("#edit_player_player").find("img").attr("src", (!element.alive) ? `./crewmates/${colour}_dead.png` : `./crewmates/${colour}.png`);
+            $("#edit_player_player").css("background-color", backgroundColors[element.colour]);
+            $("#edit_player_player").find("div").html(element.name);
+        } 
+    });
+}
+
+$(document).on("click", ".dark", function(e){
+    $("#edit_player").removeClass("edit_player");
+    $(".dark").css("display", "none");
+});
