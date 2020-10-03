@@ -2,7 +2,7 @@ const Commands = require('../commands.js');
 
 module.exports = {
     name: 'help',
-    desc: 'The Help Command',
+    desc: 'Sends a list of all the commands',
     execute(message, args) {
         message.channel.send("The folowing is all the commands that you can use.");
       

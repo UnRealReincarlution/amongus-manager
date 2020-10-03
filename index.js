@@ -88,6 +88,16 @@ client.on('message', message => {
     if(!client.commands.get(msg[0])) {
       message.reply(`That command does not exist. Try using ${CONFIG.prefix}help`);
     }
+
+    if(msg[0] == 'help') {
+      message.channel.send(`You can use the folowing commands in this server...`);
+
+      client.commands.forEach(element => {
+        message.channel.send(`\`${CONFIG.prefix}${element.name}\` ${element.desc}`);
+      });
+
+      return;
+    }
     
     client.commands.get(msg[0]).execute(message, msg, gameManager, URL);
   }

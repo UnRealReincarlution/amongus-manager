@@ -3,7 +3,7 @@ const PlayerColours = require("../player_colours.js");
 
 module.exports = {
   name: 'start',
-  desc: 'The Start Command',
+  desc: 'Starts the game, bound to the voice channel and sends a SyncLink',
   execute(message, args, gameManager, URL) {
     if(message.member.voice.channel) {
       if(gameManager.findGame(message.member.voice.channel)){ 

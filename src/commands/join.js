@@ -2,7 +2,7 @@ const PlayerColours = require("../player_colours.js");
 
 module.exports = {
     name: 'join',
-    desc: 'The Join Command',
+    desc: 'Allows a user, to join a game \`depreciated\`',
     execute(message, args, gameManager) {
         let joining_game = gameManager.findGame(message.member.voice.channel);
         
