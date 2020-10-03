@@ -82,6 +82,9 @@ class Game {
         for (const player of this.players) {
             player.setState(alive)
         }
+
+        this.updatePlayerMute();
+        this.updatePlayerBase();
     }
 
     updatePlayerBase() {

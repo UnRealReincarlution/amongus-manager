@@ -1,11 +1,19 @@
 "use strict";
-// https://discord.com/oauth2/authorize?client_id=758253543521648661&scope=bot&permissions=248736832
 
 //const URL = '128.199.234.165:3000';
 const URL = 'localhost:3000';
 
+const fs = require('fs');
 const Discord = require('discord.js');
 const client = new Discord.Client();
+client.commands = new Discord.Collection();
+
+const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./src/commands/${file}`);
+	client.commands.set(command.name, command);
+}
 
 const express = require('express');
 const app = express();
@@ -16,10 +24,9 @@ const path = require('path')
 app.use(express.static(path.join(__dirname, 'public')));
 
 const GameManager = require("./src/game_manager.js");
-const PlayerColours = require("./src/player_colours.js");
-const Commands = require("./src/commands.js")
 const Token = require('./token.js');
-const TOKEN = new Token().token;
+
+const CONFIG = new Token();
 
 server.listen(3000, () => {
   console.log("Server Alive and Well!")
@@ -75,93 +82,16 @@ client.on('message', message => {
 
   let msg = message.content.split(' ');
 
-  if(msg[0].startsWith('am.')){
+  if(message.content.startsWith(CONFIG.prefix)){
     msg[0] = msg[0].substr(3);
 
-    if(msg[0] === 'start' || msg[0] === 'begin'|| msg[0] === 'game_start' || msg[0] == 'newgame'){
-      if(message.member.voice.channel) {
-        if(gameManager.findGame(message.member.voice.channel)){ 
-          message.channel.send(`I'm sorry, but a game already exists in the voice channel **${message.member.voice.channel.name}**`)
-        }else{
-          gameManager.newGame(message.member.voice.channel, message.channel);
+    if(!client.commands.get(msg[0])) {
+      message.reply(`That command does not exist. Try using ${CONFIG.prefix}help`);
+    }
     
-          message.channel.send(`Game Created in **${message.member.voice.channel.name}**`);
-          let game = gameManager.findGame(message.member.voice.channel);
-          let game_url = `http://${URL}?game=${game.syncId}`;
-          
-          const RichEmbed = new Discord.MessageEmbed()
-              .setColor('#ffde2a')
-              .setTitle('Among Us Manager Sync')
-              .setDescription(`I saw ${randomColour()} vent... Kind of sus \n`)
-              .setURL(game_url)
-
-              .addFields(
-                // { name: 'URL', value: `[${game.syncId}](${game_url})` },
-                // { name: '\u200B', value: '\u200B' },
-                { name: 'Player Count', value: game.players.length, inline: true },
-                { name: 'Game Stage', value: game.gameStage.toUpperCase(), inline: true },
-              )
-
-              //.setURL('https://amongus_manager.io/') //?game=', game.syncId)
-              .setAuthor('Among Us Manager', 'https://is4-ssl.mzstatic.com/image/thumb/Purple124/v4/a6/22/96/a622969c-baa8-7151-fb18-5f67e456c0aa/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/246x0w.png')
-
-          message.reply(RichEmbed);
-        }
-      }else{
-        message.reply("To run this command, you must be in a voice channel.");
-      }
-    }
-  
-    if(msg[0] === 'join'){
-      let joining_game = gameManager.findGame(message.member.voice.channel);
-      
-      if(joining_game && colourExists(msg[1].trim()) && msg[1] && !joining_game.getPlayer(message.member)){
-        joining_game.addPlayer(message.member, msg[1].trim())
-        message.channel.send(`You were successfully added to the game as \`${msg[1]}\``);
-      }else if(!colourExists(msg[1])){
-        message.reply(`:thinking: Please enter a valid colour...`);
-      }else if(joining_game.getPlayer(message.member)){
-        message.reply(`You are already in this game...`);
-      }else if(!joining_game){
-        message.reply(`:thinking: No games exist in this server. Maybe try contacting the server admin if you believe this is an issue`);
-      }else{
-        message.reply(`:thinking: Try providing a colour, like \`am.join cyan\``);
-      }
-    }
-
-    if(msg[0] === 'help') {
-      message.channel.send("The folowing is all the commands that you can use.");
-      
-      Commands.forEach(element => {
-        message.channel.send(`\`am.${element.command}\` ${element.desc} `);
-      });
-    }
+    client.commands.get(msg[0]).execute(message, msg, gameManager, URL);
   }
 });
-
-function colourExists(input){
-  let return_value = false;
-  Object.keys(PlayerColours).forEach(function(key) {
-    if (PlayerColours[key].toString() == input.toString()) {
-      return_value =  true;
-    }
-  });
-
-  return return_value;
-}
-
-function randomColour() {
-  let return_value = '';
-  let random = Math.floor(Math.random() * 12);
-
-  Object.keys(PlayerColours).forEach((key, index) => {
-    if (index == random) {
-      return_value = PlayerColours[key];
-    }
-  });
-
-  return return_value;
-}
 
 client.on("voiceStateUpdate", function(oldMember, newMember) {
   let newUserChannel = newMember.channel;
@@ -205,4 +135,4 @@ client.on("ready", () => {
   });
 });
 
-client.login(TOKEN);
+client.login(CONFIG.token);
