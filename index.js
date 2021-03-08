@@ -1,7 +1,7 @@
 "use strict";
 
-//const URL = '128.199.234.165:3000';
-const URL = 'localhost:3000';
+//const URL = 'localhost:3000';
+const URL = '128.199.234.165:3000';
 
 const fs = require('fs');
 const Discord = require('discord.js');
